@@ -9,6 +9,8 @@ import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
+import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
@@ -17,31 +19,28 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
+    
+    @NotBlank
     @Column(unique = true, nullable = false)
     private String username;
-
+    
+    @NotBlank
     @Column(name = "password_hash", nullable = false)
-    private Integer passwordHash;
-
+    private String password;
+    
+    @NotBlank
     @Column(nullable = false)
-    private String role;
-
-    @Column(name = "phone_number", unique = true, nullable = false)
-    private Integer phoneNumber;
+    private String role = "ROLE_USER";
     
     @Column(name = "creation_date")
-    private Date creationDate;
+    private Date creationDate = Date.valueOf(LocalDate.now());
 
     public User() {
     }
 
-    public User(String username, Integer passwordHash, String role, Integer phoneNumber, Date createdAt) {
+    public User(String username, String passwordHash) {
         this.username = username;
-        this.passwordHash = passwordHash;
-        this.role = role;
-        this.phoneNumber = phoneNumber;
-        this.creationDate = createdAt;
+        this.password = passwordHash;
     }
 
 
@@ -50,9 +49,8 @@ public class User implements Serializable {
         int hash = 5;
         hash = 67 * hash + Objects.hashCode(this.id);
         hash = 67 * hash + Objects.hashCode(this.username);
-        hash = 67 * hash + Objects.hashCode(this.passwordHash);
+        hash = 67 * hash + Objects.hashCode(this.password);
         hash = 67 * hash + Objects.hashCode(this.role);
-        hash = 67 * hash + Objects.hashCode(this.phoneNumber);
         hash = 67 * hash + Objects.hashCode(this.creationDate);
         return hash;
     }
@@ -72,7 +70,7 @@ public class User implements Serializable {
         if (!Objects.equals(this.username, other.username)) {
             return false;
         }
-        if (!Objects.equals(this.passwordHash, other.passwordHash)) {
+        if (!Objects.equals(this.password, other.password)) {
             return false;
         }
         if (!Objects.equals(this.role, other.role)) {
@@ -81,15 +79,12 @@ public class User implements Serializable {
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }
-        if (!Objects.equals(this.phoneNumber, other.phoneNumber)) {
-            return false;
-        }
         return Objects.equals(this.creationDate, other.creationDate);
     }
 
     @Override
     public String toString() {
-        return "User{" + "id=" + id + ", username=" + username + ", passwordHash=" + passwordHash + ", role=" + role + ", phoneNumber=" + phoneNumber + ", createdAt=" + creationDate + '}';
+        return "User{" + "id=" + id + ", username=" + username + ", passwordHash=" + password + ", role=" + role + ", createdAt=" + creationDate + '}';
     }
 
     public Integer getId() {
@@ -108,12 +103,12 @@ public class User implements Serializable {
         this.username = username;
     }
 
-    public Integer getPasswordHash() {
-        return passwordHash;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPasswordHash(Integer passwordHash) {
-        this.passwordHash = passwordHash;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getRole() {
@@ -122,14 +117,6 @@ public class User implements Serializable {
 
     public void setRole(String role) {
         this.role = role;
-    }
-
-    public Integer getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(Integer phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 
     public Date getCreatedAt() {

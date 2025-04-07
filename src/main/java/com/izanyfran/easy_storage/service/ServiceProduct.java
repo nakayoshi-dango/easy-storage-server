@@ -3,6 +3,7 @@ package com.izanyfran.easy_storage.service;
 import com.izanyfran.easy_storage.entity.Product;
 import com.izanyfran.easy_storage.repository.RepositoryProduct;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,30 +23,28 @@ public class ServiceProduct {
         return repositoryProduct.findAll();
     }
 
-    public Product getProductById(String id) {
-        return repositoryProduct.findById(id).orElse(null);
+    public Optional<Product> getProductById(String id) {
+        return repositoryProduct.findById(id);
     }
     
-    public Product getProductByName(String name) {
+    public Optional<Product> getProductByName(String name) {
         return repositoryProduct.getProductByName(name);
     }
-
+    
+    @Transactional
     public Product updateProduct(Product updatedProduct) {
         return repositoryProduct.save(updatedProduct);
     }
-
+    
+    @Transactional
     public void deleteProduct(String id) {
         repositoryProduct.deleteById(id);
     }
-
+    
+    @Transactional
     public void deleteProductByName(String name) {
-        // Find the product by name
-        Product product = repositoryProduct.getProductByName(name);
-
-        if (product != null) {
-            // Delete the product from the repository
-            repositoryProduct.delete(product);
-        } 
+        Optional<Product> product = repositoryProduct.getProductByName(name);
+        product.ifPresent(repositoryProduct::delete);
     }
 
 }
