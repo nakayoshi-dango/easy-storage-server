@@ -2,7 +2,7 @@ package com.izanyfran.easy_storage.controller;
 
 import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.security.JwtUtil;
-import com.izanyfran.easy_storage.service.ServiceUser;
+import com.izanyfran.easy_storage.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final ServiceUser userService;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    public AuthController(ServiceUser userService, JwtUtil jwtUtil) {
+    public AuthController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
@@ -36,6 +36,6 @@ public class AuthController {
         } else {
             return ResponseEntity.status(401).body("Credenciales incorrectas");
         }
-    }
+    } 
 }
 

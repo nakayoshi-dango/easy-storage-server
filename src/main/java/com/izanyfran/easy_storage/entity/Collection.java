@@ -28,11 +28,13 @@ public class Collection implements Serializable {
     private String description;
     
     @ManyToOne
-    @JoinColumn(name = "owner_id",nullable = false)
+    @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
     
     @Column(name = "creation_date")
     private Date creationDate = Date.valueOf(LocalDate.now());
+    
+    
 
     public Collection() {
     }

@@ -1,20 +1,20 @@
 package com.izanyfran.easy_storage.security;
 
 import com.izanyfran.easy_storage.entity.User;
-import com.izanyfran.easy_storage.repository.RepositoryUser;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import com.izanyfran.easy_storage.repository.UserRepository;
 
 @Service
 public class CustomUserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
-    private final RepositoryUser userRepository;
+    private final UserRepository userRepository;
 
-    public CustomUserDetailsService(RepositoryUser userRepository) {
+    public CustomUserDetailsService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

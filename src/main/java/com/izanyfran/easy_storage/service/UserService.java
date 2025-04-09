@@ -1,22 +1,24 @@
 package com.izanyfran.easy_storage.service;
 
+import com.izanyfran.easy_storage.dto.UserDTO;
 import com.izanyfran.easy_storage.entity.User;
-import com.izanyfran.easy_storage.repository.RepositoryUser;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.Optional;
+import com.izanyfran.easy_storage.repository.UserRepository;
+import java.util.stream.Collectors;
 
 @Service
-public class ServiceUser {
+public class UserService {
 
-    private final RepositoryUser repositoryUser;
+    private final UserRepository repositoryUser;
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public ServiceUser(RepositoryUser repositoryUser) {
+    public UserService(UserRepository repositoryUser) {
         this.repositoryUser = repositoryUser;
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
@@ -39,6 +41,14 @@ public class ServiceUser {
     public boolean authenticate(String username, String password) {
         Optional<User> user = repositoryUser.findByUsername(username);
         return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
+    }
+    
+    public UserDTO toDTO(User user) {
+        return new UserDTO(user.getId(), user.getUsername(), user.getRole(), user.getCreatedAt());
+    }
+
+    public List<UserDTO> toDTOList(List<User> users) {
+        return users.stream().map(this::toDTO).collect(Collectors.toList());
     }
 
     @Transactional

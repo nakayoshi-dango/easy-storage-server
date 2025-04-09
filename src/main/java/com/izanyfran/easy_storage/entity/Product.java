@@ -35,6 +35,8 @@ public class Product implements Serializable {
     @Column(name = "upload_date")
     private Date uploadDate = Date.valueOf(LocalDate.now());
 
+    
+    
     public Product() {
     }
     

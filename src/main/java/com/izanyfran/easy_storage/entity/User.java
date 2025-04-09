@@ -1,16 +1,22 @@
 package com.izanyfran.easy_storage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Objects;
 import jakarta.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -34,6 +40,30 @@ public class User implements Serializable {
     
     @Column(name = "creation_date")
     private Date creationDate = Date.valueOf(LocalDate.now());
+    
+    @OneToMany(mappedBy = "uploader", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Product> products;
+    
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE)
+    @JsonIgnore
+    private List<Collection> collections;
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    public List<Collection> getCollections() {
+        return collections;
+    }
+
+    public void setCollections(List<Collection> collections) {
+        this.collections = collections;
+    }
 
     public User() {
     }
