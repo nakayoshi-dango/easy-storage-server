@@ -1,6 +1,5 @@
 package com.izanyfran.easy_storage.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -8,7 +7,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
@@ -68,9 +66,9 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String username, String passwordHash) {
+    public User(String username, String password) {
         this.username = username;
-        this.password = passwordHash;
+        this.password = password;
     }
 
 

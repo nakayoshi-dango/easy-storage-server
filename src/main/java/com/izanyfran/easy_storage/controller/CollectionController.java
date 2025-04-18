@@ -1,7 +1,6 @@
 package com.izanyfran.easy_storage.controller;
 
 import com.izanyfran.easy_storage.entity.Collection;
-import com.izanyfran.easy_storage.entity.Product;
 import com.izanyfran.easy_storage.entity.ProductCollection;
 import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.CollectionService;

@@ -1,6 +1,5 @@
 package com.izanyfran.easy_storage.controller;
 
-import com.izanyfran.easy_storage.dto.UserDTO;
 import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.UserService;
 import java.util.List;

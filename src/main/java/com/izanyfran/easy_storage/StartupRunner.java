@@ -53,10 +53,12 @@ public class StartupRunner implements CommandLineRunner {
 
         // Ensure the admin is present before using it
         if (admin.isPresent()) {
-            Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", admin.get(), "Amazon");
+            Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon");
+            dumbbell.setUploader(admin.get());
             dumbbell = ps.createProduct(dumbbell);
             System.out.println("DUMBBELL: " + dumbbell);
-            Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", admin.get(), "Renaissance Periodization");
+            Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", "Renaissance Periodization");
+            creatine.setUploader(admin.get());
             creatine = ps.createProduct(creatine);
             System.out.println("CREATINE: " + creatine);
             Collection gymStuff = new Collection("Gym Stuff", "Equipment and supplements for hypertrophy or exercise.", admin.get());

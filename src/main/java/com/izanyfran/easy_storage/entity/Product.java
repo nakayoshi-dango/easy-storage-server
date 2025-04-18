@@ -40,11 +40,10 @@ public class Product implements Serializable {
     public Product() {
     }
     
-    public Product(String id, String name, String description, User uploader, String whereToBuy) {
+    public Product(String id, String name, String description, String whereToBuy) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.uploader = uploader;
         this.whereToBuy = whereToBuy;
     }
 
