@@ -32,13 +32,13 @@ public class ProductCollection {
     }
     
     public ProductCollection(Product product, Collection collection, int quantity) {
-    this.id = new ProductCollectionKey();
-    this.id.setProductId(product.getId());
-    this.id.setCollectionId(collection.getId());
-    this.product = product;
-    this.collection = collection;
-    this.quantity = quantity;
-}
+        this.id = new ProductCollectionKey();
+        this.id.setProductId(product.getId());
+        this.id.setCollectionId(collection.getId());
+        this.product = product;
+        this.collection = collection;
+        this.quantity = quantity;
+    }
 
     public ProductCollectionKey getId() {
         return id;

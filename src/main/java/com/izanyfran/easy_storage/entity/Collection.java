@@ -33,8 +33,12 @@ public class Collection implements Serializable {
     
     @Column(name = "creation_date")
     private Date creationDate = Date.valueOf(LocalDate.now());
-    
-    
+
+    public Collection(Integer id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
 
     public Collection() {
     }
@@ -43,6 +47,11 @@ public class Collection implements Serializable {
         this.name = name;
         this.description = description;
         this.owner = owner;
+    }
+    
+    public Collection(String name, String description) {
+        this.name = name;
+        this.description = description;
     }
 
     @Override

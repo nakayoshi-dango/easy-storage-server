@@ -5,15 +5,15 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class ProductCollectionKey implements Serializable {
-    private String productId;
+public class UserCollectionKey implements Serializable {
+    private Integer userId;
     private Integer collectionId;
 
     @Override
     public int hashCode() {
-        int hash = 7;
-        hash = 31 * hash + Objects.hashCode(this.productId);
-        hash = 31 * hash + Objects.hashCode(this.collectionId);
+        int hash = 5;
+        hash = 47 * hash + Objects.hashCode(this.userId);
+        hash = 47 * hash + Objects.hashCode(this.collectionId);
         return hash;
     }
 
@@ -28,19 +28,22 @@ public class ProductCollectionKey implements Serializable {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ProductCollectionKey other = (ProductCollectionKey) obj;
-        if (!Objects.equals(this.productId, other.productId)) {
+        final UserCollectionKey other = (UserCollectionKey) obj;
+        if (!Objects.equals(this.userId, other.userId)) {
             return false;
         }
         return Objects.equals(this.collectionId, other.collectionId);
     }
 
-    public String getProductId() {
-        return productId;
+    public UserCollectionKey() {
     }
 
-    public void setProductId(String productId) {
-        this.productId = productId;
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public Integer getCollectionId() {
@@ -49,9 +52,6 @@ public class ProductCollectionKey implements Serializable {
 
     public void setCollectionId(Integer collectionId) {
         this.collectionId = collectionId;
-    }
-
-    public ProductCollectionKey() {
     }
     
     

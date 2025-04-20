@@ -7,6 +7,7 @@ import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.CollectionService;
 import com.izanyfran.easy_storage.service.ProductCollectionService;
 import com.izanyfran.easy_storage.service.ProductService;
+import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
 import java.util.List;
 import java.util.Optional;
@@ -42,6 +43,9 @@ public class ProductController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserCollectionService userCollectionService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/all")
     public ResponseEntity<?> productsAll() {
@@ -75,36 +79,75 @@ public class ProductController {
         String username = (String) authentication.getPrincipal();
         User user = userService.getUserByUsername(username).get();
         Optional<Collection> col = collectionService.getCollectionByName(collectionName);
+        Optional<Product> product = productService.getProductById(productId);
         if (col.isPresent()) {
-            //Si el usuario es admin o es el propietario
-            if (user.getRole().equals("ROLE_ADMIN") || username.equals(col.get().getOwner().getUsername())) {
-                String productName = productService.getProductById(productId).get().getName();
-                if (productCollectionService.isProductInCollection(productId, collectionName)) {
-                    ProductCollection pc = productCollectionService.getRelation(collectionName, productId).get();
-                    pc.setQuantity(pc.getQuantity() + quantity);
-                    pc = productCollectionService.updateRelation(pc);
-                    return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha añadido "
-                            + quantity + " " + productName + " más a la colección " + collectionName
-                            + ".\n Ahora hay un total de " + pc.getQuantity() + ".");
-                } else {
-                    try {
-                        productCollectionService.addProductToCollection(productId, collectionName, quantity);
-                    } catch (Exception e) {
-                        return ResponseEntity.status(HttpStatus.CREATED).body("Error al añadir producto a colección.");
+            if (product.isPresent()) {
+                if (hasAccess(col.get(), user)) {
+                    String productName = product.get().getName();
+                    if (productCollectionService.isProductInCollection(productId, collectionName)) {
+                        ProductCollection pc = productCollectionService.getRelation(collectionName, productId).get();
+                        pc.setQuantity(pc.getQuantity() + quantity);
+                        pc = productCollectionService.updateRelation(pc);
+                        return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha añadido "
+                                + quantity + " " + productName + " más a la colección " + collectionName
+                                + ".\n Ahora hay un total de " + pc.getQuantity() + ".");
+                    } else {
+                        try {
+                            productCollectionService.addProductToCollection(productId, collectionName, quantity);
+                        } catch (Exception e) {
+                            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body("Error al añadir producto a colección.");
+                        }
+                        return ResponseEntity.status(HttpStatus.CREATED).body("Se ha añadido " + quantity + " " + productName + " a la colección " + collectionName + ".");
                     }
-                    return ResponseEntity.status(HttpStatus.CREATED).body("Se ha añadido " + quantity + " " + productName + " a la colección " + collectionName + ".");
+                } else {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes acceso a esta colección.");
                 }
             } else {
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes acceso a esta colección.");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este producto no existe.");
             }
-
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta colección no existe.");
         }
     }
-    
-    
-    
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @DeleteMapping("/deleteFromCollection")
+    public ResponseEntity<?> deleteProductFromCollection(@RequestParam String productId, @RequestParam String collectionName) {
+        // Obtener el nombre del usuario autenticado directamente desde el SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        User user = userService.getUserByUsername(username).get();
+        Optional<Collection> col = collectionService.getCollectionByName(collectionName);
+        Optional<Product> product = productService.getProductById(productId);
+        if (col.isPresent()) {
+            if (product.isPresent()) {
+                if (hasAccess(col.get(), user)) {
+                    if (productCollectionService.isProductInCollection(productId, collectionName)) {
+                        ProductCollection pc = productCollectionService.getRelation(collectionName, productId).get();
+                        productCollectionService.deleteRelation(pc);
+                        return ResponseEntity.status(HttpStatus.OK).body(
+                                "Se ha eliminado " + product.get().getName() + " de la colección "
+                                + collectionName + ".");
+                    } else {
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El producto no estaba en la colección.");
+                    }
+                } else {
+                    return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes acceso a esta colección.");
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Este producto no existe.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta colección no existe.");
+        }
+    }
+
+    private Boolean hasAccess(Collection collection, User user) {
+        List<User> members = userCollectionService.findUsersByCollectionName(collection.getName());
+        return collection.getOwner().getUsername().equals(user.getUsername())
+                || user.getRole().equals("ROLE_ADMIN") || members.contains(user);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/getProduct")
     public ResponseEntity<?> getProduct(@RequestParam String productId) {
