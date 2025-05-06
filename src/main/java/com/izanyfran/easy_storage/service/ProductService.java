@@ -47,7 +47,8 @@ public class ProductService {
             product.getDescription(),
             product.getUploader().getUsername(), // Extrae solo el nombre del uploader
             product.getWhereToBuy(),
-            product.getUploadDate()
+            product.getUploadDate(),
+            product.getImageURL()
         );
     }
 

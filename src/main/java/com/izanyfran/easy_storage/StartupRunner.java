@@ -9,6 +9,7 @@ import com.izanyfran.easy_storage.service.ProductService;
 import com.izanyfran.easy_storage.service.UserService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,6 +19,13 @@ import org.springframework.stereotype.Component;
 @EntityScan(basePackages = "com.izanyfran.easy_storage.entity")
 public class StartupRunner implements CommandLineRunner {
 
+    
+    @Value("${app.admin.username}")
+    private String adminUsername;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
+    
     @Autowired
     private UserService us;
 
@@ -36,15 +44,12 @@ public class StartupRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         System.out.println("\n\n\n\n\n\n STARTUP RUNNER");
-        String pass = "admin";
-        System.out.println("ADMIN'S PASSWORD BEFORE HASH: " + pass);
-        String passHash = passwordEncoder.encode(pass);
-        System.out.println("ADMIN'S PASSWORD BEFORE HASH: " + passHash);
+        String passHash = passwordEncoder.encode(adminPassword);
 
         Optional<User> admin = us.getUserByUsername("admin");
         if (!admin.isPresent()) {
             // Create the admin user if it doesn't exist
-            User userAdmin = new User("admin", passHash);
+            User userAdmin = new User(adminUsername, passHash);
             userAdmin.setRole("ROLE_ADMIN");
             admin = Optional.of(us.createUser(userAdmin));
         }
@@ -53,11 +58,11 @@ public class StartupRunner implements CommandLineRunner {
 
         // Ensure the admin is present before using it
         if (admin.isPresent()) {
-            Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon");
+            Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon", "https://www.ukgymequipment.com/images/2-20kg-premium-rubber-dumbbell-set-p5807-75449_image.jpg");
             dumbbell.setUploader(admin.get());
             dumbbell = ps.createProduct(dumbbell);
             System.out.println("DUMBBELL: " + dumbbell);
-            Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", "Renaissance Periodization");
+            Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", "Renaissance Periodization", "https://www.extremenutritions.com/cdn/shop/files/71rPih5keSL._AC_SL1500.jpg?v=1721910655&width=720");
             creatine.setUploader(admin.get());
             creatine = ps.createProduct(creatine);
             System.out.println("CREATINE: " + creatine);

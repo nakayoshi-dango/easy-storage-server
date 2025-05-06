@@ -9,14 +9,16 @@ public class ProductDTO {
     private String uploaderUsername;
     private String whereToBuy;
     private Date uploadDate;
+    private String imageURL;
 
-    public ProductDTO(String id, String name, String description, String uploaderUsername, String whereToBuy, Date uploadDate) {
+    public ProductDTO(String id, String name, String description, String uploaderUsername, String whereToBuy, Date uploadDate, String imageURL) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.uploaderUsername = uploaderUsername;
         this.whereToBuy = whereToBuy;
         this.uploadDate = uploadDate;
+        this.imageURL = imageURL;
     }
 
     public String getId() {
@@ -41,5 +43,9 @@ public class ProductDTO {
 
     public Date getUploadDate() {
         return uploadDate;
+    }
+
+    public String getImageURL() {
+        return imageURL;
     }
 }

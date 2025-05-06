@@ -35,16 +35,27 @@ public class Product implements Serializable {
     @Column(name = "upload_date")
     private Date uploadDate = Date.valueOf(LocalDate.now());
 
+    @Column(name = "image_url")
+    private String imageURL;
     
     
     public Product() {
     }
     
-    public Product(String id, String name, String description, String whereToBuy) {
+    public Product(String id, String name, String description, String whereToBuy, String imageURL) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.whereToBuy = whereToBuy;
+        this.imageURL = imageURL;
+    }
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
     }
 
     @Override
