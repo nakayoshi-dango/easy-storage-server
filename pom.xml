@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.izanyfran</groupId>
     <artifactId>easy-storage</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1</version>
     <name>easy-storage</name>
     <description>TFG de DAM hecho por Izan Calvo Alcubierre y Francisco Keiji Fernandez Taniguchi </description>
     <properties>
@@ -54,6 +54,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>3.4.3</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal> <!-- Empaqueta en un .jar ejecutable -->
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

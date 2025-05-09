@@ -19,13 +19,12 @@ import org.springframework.stereotype.Component;
 @EntityScan(basePackages = "com.izanyfran.easy_storage.entity")
 public class StartupRunner implements CommandLineRunner {
 
-    
     @Value("${app.admin.username}")
     private String adminUsername;
 
     @Value("${app.admin.password}")
     private String adminPassword;
-    
+
     @Autowired
     private UserService us;
 
@@ -48,39 +47,48 @@ public class StartupRunner implements CommandLineRunner {
 
         Optional<User> admin = us.getUserByUsername("admin");
         if (!admin.isPresent()) {
-            // Create the admin user if it doesn't exist
             User userAdmin = new User(adminUsername, passHash);
             userAdmin.setRole("ROLE_ADMIN");
             admin = Optional.of(us.createUser(userAdmin));
+            System.out.println("ADMIN: " + us.toDTO(admin.get()));
         }
-
-        System.out.println("ADMIN: " + admin.get());
-
-        // Ensure the admin is present before using it
+        
         if (admin.isPresent()) {
-            Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon", "https://www.ukgymequipment.com/images/2-20kg-premium-rubber-dumbbell-set-p5807-75449_image.jpg");
-            dumbbell.setUploader(admin.get());
-            dumbbell = ps.createProduct(dumbbell);
-            System.out.println("DUMBBELL: " + dumbbell);
-            Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", "Renaissance Periodization", "https://www.extremenutritions.com/cdn/shop/files/71rPih5keSL._AC_SL1500.jpg?v=1721910655&width=720");
-            creatine.setUploader(admin.get());
-            creatine = ps.createProduct(creatine);
-            System.out.println("CREATINE: " + creatine);
-            Collection gymStuff = new Collection("Gym Stuff", "Equipment and supplements for hypertrophy or exercise.", admin.get());
-            gymStuff = cs.createCollection(gymStuff);
-            System.out.println("GYM: " + gymStuff);
-            try {
-                pcs.addProductToCollection(dumbbell.getId(), gymStuff.getName(), 2);
-            } catch (Exception e) {
-                System.out.println("Error: could not add product " + dumbbell.getName() + " to collection " + gymStuff.getName() + ".");
-            }
-            try {
-                pcs.addProductToCollection(creatine.getId(), gymStuff.getName(), 2);
-            } catch (Exception e) {
-                System.out.println("Error: could not add product " + creatine.getName() + " to collection" + gymStuff.getName() + "");
+            Optional<Collection> optGymStuff = cs.getCollectionByName("Gym Stuff");
+            if (!optGymStuff.isPresent()) {
+                Collection gymStuff = new Collection("Gym Stuff", "Equipment and supplements for hypertrophy or exercise.", admin.get());
+                gymStuff = cs.createCollection(gymStuff);
+                System.out.println("GYM: " + gymStuff);
+
+                Optional<Product> optDumbbell = ps.getProductById("1234A");
+                if (!optDumbbell.isPresent()) {
+                    Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon", "https://www.ukgymequipment.com/images/2-20kg-premium-rubber-dumbbell-set-p5807-75449_image.jpg");
+                    dumbbell.setUploader(admin.get());
+                    dumbbell = ps.createProduct(dumbbell);
+                    System.out.println("DUMBBELL: " + dumbbell);
+                    try {
+                        pcs.addProductToCollection(dumbbell.getId(), gymStuff.getName(), 2);
+                    } catch (Exception e) {
+                        System.out.println("Error: could not add product " + dumbbell.getName() + " to collection " + gymStuff.getName() + ".");
+                    }
+                }
+
+                Optional<Product> optCreatine = ps.getProductById("A965X");
+                if (!optCreatine.isPresent()) {
+                    Product creatine = new Product("A965X", "500g Creatine powder", "A creatine container with 500 grams of powder", "Renaissance Periodization", "https://www.extremenutritions.com/cdn/shop/files/71rPih5keSL._AC_SL1500.jpg?v=1721910655&width=720");
+                    creatine.setUploader(admin.get());
+                    creatine = ps.createProduct(creatine);
+                    System.out.println("CREATINE: " + creatine);
+                    try {
+                        pcs.addProductToCollection(creatine.getId(), gymStuff.getName(), 2);
+                    } catch (Exception e) {
+                        System.out.println("Error: could not add product " + creatine.getName() + " to collection" + gymStuff.getName() + "");
+                    }
+                }
+
             }
         } else {
-            System.out.println("Admin user creation failed.");
+            System.out.println("No se pudo crear al usuario administrador.");
         }
         System.out.println("\n\n\n\n\n\n STARTUP RUNNER");
     }
