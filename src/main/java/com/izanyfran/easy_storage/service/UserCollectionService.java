@@ -23,19 +23,19 @@ public class UserCollectionService {
     @Autowired
     private CollectionRepository collectionRepository;
 
-    public List<User> findUsersByCollectionId(Integer collectionId) {
+    public List<User> getUsersByCollectionId(Integer collectionId) {
         return userCollectionRepository.findUsersByCollectionId(collectionId);
     }
 
-    public List<User> findUsersByCollectionName(String collectionName) {
+    public List<User> getUsersByCollectionName(String collectionName) {
         return userCollectionRepository.findUsersByCollectionName(collectionName);
     }
 
-    public List<Collection> findCollectionsByUserId(Integer userId) {
+    public List<Collection> getCollectionsByUserId(Integer userId) {
         return userCollectionRepository.findCollectionsByUserId(userId);
     }
 
-    public List<Collection> findCollectionsByUserName(String userName) {
+    public List<Collection> getCollectionsByUserName(String userName) {
         return userCollectionRepository.findCollectionsByUserName(userName);
     }
 

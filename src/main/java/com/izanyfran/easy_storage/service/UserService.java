@@ -44,7 +44,7 @@ public class UserService {
     }
     
     public UserDTO toDTO(User user) {
-        return new UserDTO(user.getId(), user.getUsername(), user.getRole(), user.getCreatedAt());
+        return new UserDTO(user.getId(), user.getUsername(), user.getRole(), user.getCreatedAt(), user.getImageURL());
     }
 
     public List<UserDTO> toDTOList(List<User> users) {

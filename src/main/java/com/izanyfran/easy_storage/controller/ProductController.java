@@ -46,8 +46,8 @@ public class ProductController {
     @Autowired
     private UserCollectionService userCollectionService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/all")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/getAllProducts")
     public ResponseEntity<?> productsAll() {
         List<Product> allProducts = productService.getAllProducts();
         if (allProducts.isEmpty()) {
@@ -68,6 +68,20 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen productos subidos por el usuario.");
         } else {
             return ResponseEntity.ok(productService.toDTOList(userProducts));
+        }
+    }
+    
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/mineCount")
+    public ResponseEntity<?> productsMineCount() {
+        // Obtener el nombre del usuario autenticado directamente desde el SecurityContextHolder
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        List<Product> userProducts = productService.getUserProducts(username);
+        if (userProducts.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen productos subidos por el usuario.");
+        } else {
+            return ResponseEntity.ok(userProducts.size());
         }
     }
 
@@ -143,7 +157,7 @@ public class ProductController {
     }
 
     private Boolean hasAccess(Collection collection, User user) {
-        List<User> members = userCollectionService.findUsersByCollectionName(collection.getName());
+        List<User> members = userCollectionService.getUsersByCollectionName(collection.getName());
         return collection.getOwner().getUsername().equals(user.getUsername())
                 || user.getRole().equals("ROLE_ADMIN") || members.contains(user);
     }
@@ -187,7 +201,7 @@ public class ProductController {
             if (hasAccess(oldProduct, user)) {
                 product.setUploader(oldProduct.getUploader());
                 Product updatedProduct = productService.updateProduct(product);
-                return ResponseEntity.status(HttpStatus.FOUND).body("Se ha actualizado el producto " + updatedProduct.getName() + " con ID " + updatedProduct.getId() + ".");
+                return ResponseEntity.status(HttpStatus.OK).body("Se ha actualizado el producto " + updatedProduct.getName() + " con ID " + updatedProduct.getId() + ".");
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permisos sobre ese producto");
             }

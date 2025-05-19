@@ -49,6 +49,7 @@ public class StartupRunner implements CommandLineRunner {
         if (!admin.isPresent()) {
             User userAdmin = new User(adminUsername, passHash);
             userAdmin.setRole("ROLE_ADMIN");
+            userAdmin.setImageURL("https://cdn.discordapp.com/attachments/1371880792808099921/1372205572161671269/munequito.png?ex=6825ed86&is=68249c06&hm=4cc739945363720af26b485be617cf6549f0d6760f0b7a946574ee7732335d0d&");
             admin = Optional.of(us.createUser(userAdmin));
             System.out.println("ADMIN: " + us.toDTO(admin.get()));
         }

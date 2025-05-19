@@ -15,10 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,14 +33,8 @@ public class UserController {
     @Autowired
     private UserCollectionService userCollectionService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/dashboard")
-    public ResponseEntity<String> adminDashboard() {
-        return ResponseEntity.ok("Bienvenido al panel de administración");
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/getall")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/getAllUsers")
     public ResponseEntity<?> getAllUsers() {
         List<User> allusers = userService.getAllUsers();
         if (allusers.isEmpty()) {
@@ -54,9 +45,17 @@ public class UserController {
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    @GetMapping("/dashboard")
-    public ResponseEntity<String> dashboard() {
-        return ResponseEntity.ok("Bienvenido al panel de usuario");
+    @GetMapping("/myInfo")
+    public ResponseEntity<?> myInfo() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        Optional<User> optUser = userService.getUserByUsername(username);
+        if (optUser.isPresent()) {
+            User user = optUser.get();
+            return ResponseEntity.ok(userService.toDTO(user));
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ningún usuario con ese nombre.");
+        }
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
@@ -67,45 +66,20 @@ public class UserController {
             User user = optUser.get();
             return ResponseEntity.ok(userService.toDTO(user));
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No existe ningún usuario con ese nombre.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existe ningún usuario con ese nombre.");
         }
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PostMapping("/createUser")
-    public ResponseEntity<String> createUser(@RequestBody User user) {
-        if (userService.getUserByUsername(user.getUsername()).isEmpty()) {
-            User createdUser = userService.createUser(user);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Se ha creado el usuario " + createdUser.getUsername() + " con ID " + createdUser.getId() + ".");
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Ya existe un usuario con ese nombre.");
-        }
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping("/updateUser")
-    public ResponseEntity<String> updateUser(@RequestBody User user) {
-        Optional<User> optOldUser = userService.getUserById(user.getId());
-        if (optOldUser.isPresent()) {
-            user.setCreatedAt(optOldUser.get().getCreatedAt());
-            User updatedUser = userService.updateUser(user);
-            return ResponseEntity.status(HttpStatus.FOUND).body("Se ha actualizado el usuario " + updatedUser.getUsername() + " con ID " + updatedUser.getId() + ".");
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No existe ningún producto con ese ID.");
-        }
-    }
-
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @DeleteMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@RequestParam String username) {
-        Optional<User> optOldUser = userService.getUserByUsername(username);
-        if (optOldUser.isPresent()) {
-            User user = optOldUser.get();
-            userService.deleteUserByUsername(username);
-            return ResponseEntity.status(HttpStatus.OK).body("Se ha eliminado el usuario " + user.getUsername() + " con ID " + user.getId() + ".");
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No existe ningún usuario con ese ID.");
-        }
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/setPic")
+    public ResponseEntity<?> setPic(@RequestParam String imgURL) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        Optional<User> optUser = userService.getUserByUsername(username);
+        User user = optUser.get();
+        user.setImageURL(imgURL);
+        userService.updateUser(user);
+        return ResponseEntity.ok().body("Foto de perfil cambiada");
     }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")

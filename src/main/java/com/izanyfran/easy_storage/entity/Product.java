@@ -7,8 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -22,7 +21,7 @@ public class Product implements Serializable {
     @Column(nullable = false, unique = true)
     private String name;
     
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
     
     @ManyToOne
@@ -33,9 +32,9 @@ public class Product implements Serializable {
     private String whereToBuy;
     
     @Column(name = "upload_date")
-    private Date uploadDate = Date.valueOf(LocalDate.now());
-
-    @Column(name = "image_url")
+    private Date uploadDate = new Date();
+    
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageURL;
     
     

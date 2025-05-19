@@ -41,16 +41,7 @@ public class CollectionController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/all")
-    public ResponseEntity<?> collectionsAll() {
-        List<Collection> allCollections = collectionService.getAllCollections();
-        if (allCollections.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aún no existen colecciones.");
-        } else {
-            return ResponseEntity.ok(collectionService.toDTOList(allCollections));
-        }
-    }
+    
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/mine")
@@ -98,7 +89,7 @@ public class CollectionController {
         Optional<Collection> col = collectionService.getCollectionByName(collectionName);
         if (col.isPresent()) {
             if (hasAccess(col.get(), user)) {
-                List<User> members = userCollectionService.findUsersByCollectionName(collectionName);
+                List<User> members = userCollectionService.getUsersByCollectionName(collectionName);
                 if (members.isEmpty()) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen miembros en esta colección.");
                 } else {
@@ -183,7 +174,7 @@ public class CollectionController {
     }
 
     private Boolean hasAccess(Collection collection, User user) {
-        List<User> members = userCollectionService.findUsersByCollectionName(collection.getName());
+        List<User> members = userCollectionService.getUsersByCollectionName(collection.getName());
         return collection.getOwner().getUsername().equals(user.getUsername())
                 || user.getRole().equals("ROLE_ADMIN") || members.contains(user);
     }

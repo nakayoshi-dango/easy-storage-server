@@ -9,8 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.sql.Date;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -24,7 +23,7 @@ public class Collection implements Serializable {
     @Column(unique = true, nullable = false)
     private String name;
     
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String description;
     
     @ManyToOne
@@ -32,7 +31,7 @@ public class Collection implements Serializable {
     private User owner;
     
     @Column(name = "creation_date")
-    private Date creationDate = Date.valueOf(LocalDate.now());
+    private Date creationDate = new Date();
 
     public Collection(Integer id, String name, String description) {
         this.id = id;

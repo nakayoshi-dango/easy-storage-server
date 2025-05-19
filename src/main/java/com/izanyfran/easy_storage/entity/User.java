@@ -10,10 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.Objects;
 import jakarta.validation.constraints.NotBlank;
-import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -37,7 +36,10 @@ public class User implements Serializable {
     private String role = "ROLE_USER";
     
     @Column(name = "creation_date")
-    private Date creationDate = Date.valueOf(LocalDate.now());
+    private Date creationDate = new Date();
+    
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageURL;
     
     @OneToMany(mappedBy = "uploader", cascade = CascadeType.REMOVE)
     @JsonIgnore
@@ -47,6 +49,14 @@ public class User implements Serializable {
     @JsonIgnore
     private List<Collection> collections;
 
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+    
     public List<Product> getProducts() {
         return products;
     }

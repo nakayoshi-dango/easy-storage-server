@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class JwtUtil {
 
     private final SecretKey secretKey;
-    private static final long EXPIRATION_TIME = 3600000; // 1 hora
+    private static final long EXPIRATION_TIME = 21600000; // 6 horas
 
     public JwtUtil() {
         this.secretKey = Keys.hmacShaKeyFor("12345678901234567890123456789012".getBytes());
