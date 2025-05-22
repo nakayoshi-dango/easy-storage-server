@@ -1,7 +1,6 @@
 package com.izanyfran.easy_storage.repository;
 
 import com.izanyfran.easy_storage.entity.Collection;
-import com.izanyfran.easy_storage.entity.Product;
 import com.izanyfran.easy_storage.entity.User;
 import java.util.List;
 import java.util.Optional;

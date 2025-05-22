@@ -7,8 +7,11 @@ import com.izanyfran.easy_storage.service.CollectionService;
 import com.izanyfran.easy_storage.service.ProductCollectionService;
 import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,11 +44,9 @@ public class CollectionController {
     @Autowired
     private UserService userService;
 
-    
-
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/mine")
-    public ResponseEntity<?> collectionsMine() {
+    public ResponseEntity<?> collectionsMine() { //Colecciones donde el usuario es dueño
         // Obtener el nombre del usuario autenticado directamente desde el SecurityContextHolder
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = (String) authentication.getPrincipal();
@@ -54,6 +55,23 @@ public class CollectionController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen colecciones creadas por el usuario.");
         } else {
             return ResponseEntity.ok(collectionService.toDTOList(userCollections));
+        }
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/visible")
+    public ResponseEntity<?> collectionsVisible() { //Colecciones donde el usuario es miembro o es dueño
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        List<Collection> memberCollections = userCollectionService.getCollectionsByUserName(username);
+        List<Collection> ownerCollections = collectionService.getUserCollections(username);
+        Set<Collection> visibleCollectionsSet = new HashSet<>(ownerCollections);
+        visibleCollectionsSet.addAll(memberCollections);
+        List<Collection> visibleCollectionsList = new ArrayList<>(visibleCollectionsSet);
+        if (visibleCollectionsList.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen colecciones visibles para el usuario.");
+        } else {
+            return ResponseEntity.ok(collectionService.toDTOList(visibleCollectionsList));
         }
     }
 
@@ -68,7 +86,7 @@ public class CollectionController {
             if (hasAccess(col.get(), user)) {
                 List<ProductCollection> productsCollection = productCollectionService.getRelationsByCollectionName(collectionName);
                 if (productsCollection.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen productos en esta colección.");
+                    return ResponseEntity.ok("No existen productos en esta colección.");
                 } else {
                     return ResponseEntity.ok(productCollectionService.toDTOList(productsCollection));
                 }
@@ -91,7 +109,7 @@ public class CollectionController {
             if (hasAccess(col.get(), user)) {
                 List<User> members = userCollectionService.getUsersByCollectionName(collectionName);
                 if (members.isEmpty()) {
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen miembros en esta colección.");
+                    return ResponseEntity.ok("No existen miembros en esta colección.");
                 } else {
                     return ResponseEntity.ok(userService.toDTOList(members));
                 }
@@ -103,6 +121,24 @@ public class CollectionController {
         }
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @GetMapping("/{collectionName}/nonusers")
+    public ResponseEntity<?> usersNotInCollection(@PathVariable String collectionName) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = (String) authentication.getPrincipal();
+        User user = userService.getUserByUsername(username).get();
+        Optional<Collection> col = collectionService.getCollectionByName(collectionName);
+        if (col.isPresent()) {
+            if (hasAccess(col.get(), user)) {
+                List<User> nonmembers = userCollectionService.getUsersNotInCollection(collectionName);
+                return ResponseEntity.ok(userService.toDTOList(nonmembers));
+            } else {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes acceso a esta colección.");
+            }
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Esta colección no existe.");
+        }
+    }
 
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/getCollection")
@@ -144,7 +180,7 @@ public class CollectionController {
                 collection.setOwner(oldCollection.getOwner());
                 collection.setCreationDate(oldCollection.getCreationDate());
                 Collection updatedCollection = collectionService.updateCollection(collection);
-                return ResponseEntity.status(HttpStatus.FOUND).body("Se ha actualizado la colección " + updatedCollection.getName() + " con ID " + updatedCollection.getId() + ".");
+                return ResponseEntity.status(HttpStatus.OK).body("Se ha actualizado la colección " + updatedCollection.getName() + " con ID " + updatedCollection.getId() + ".");
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes permisos superiores sobre esa colección");
             }

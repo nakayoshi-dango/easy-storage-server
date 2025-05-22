@@ -70,7 +70,7 @@ public class ProductController {
             return ResponseEntity.ok(productService.toDTOList(userProducts));
         }
     }
-    
+
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     @GetMapping("/mineCount")
     public ResponseEntity<?> productsMineCount() {
@@ -100,7 +100,11 @@ public class ProductController {
                     String productName = product.get().getName();
                     if (productCollectionService.isProductInCollection(productId, collectionName)) {
                         ProductCollection pc = productCollectionService.getRelation(collectionName, productId).get();
-                        pc.setQuantity(pc.getQuantity() + quantity);
+                        if ((pc.getQuantity() - quantity) < 0) {
+                            pc.setQuantity(0);
+                        } else {
+                            pc.setQuantity(pc.getQuantity() + quantity);
+                        }
                         pc = productCollectionService.updateRelation(pc);
                         return ResponseEntity.status(HttpStatus.ACCEPTED).body("Se ha añadido "
                                 + quantity + " " + productName + " más a la colección " + collectionName

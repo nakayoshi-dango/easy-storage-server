@@ -55,7 +55,7 @@ public class AdminController {
         if (optOldUser.isPresent()) {
             user.setCreatedAt(optOldUser.get().getCreatedAt());
             User updatedUser = userService.updateUser(user);
-            return ResponseEntity.status(HttpStatus.FOUND).body("Se ha actualizado el usuario " + updatedUser.getUsername() + " con ID " + updatedUser.getId() + ".");
+            return ResponseEntity.status(HttpStatus.OK).body("Se ha actualizado el usuario " + updatedUser.getUsername() + " con ID " + updatedUser.getId() + ".");
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No existe ningún producto con ese ID.");
         }

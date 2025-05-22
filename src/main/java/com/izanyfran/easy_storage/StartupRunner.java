@@ -6,6 +6,7 @@ import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.CollectionService;
 import com.izanyfran.easy_storage.service.ProductCollectionService;
 import com.izanyfran.easy_storage.service.ProductService;
+import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,9 @@ public class StartupRunner implements CommandLineRunner {
     @Autowired
     private ProductCollectionService pcs;
 
+    @Autowired
+    private UserCollectionService ucs;
+
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -49,18 +53,18 @@ public class StartupRunner implements CommandLineRunner {
         if (!admin.isPresent()) {
             User userAdmin = new User(adminUsername, passHash);
             userAdmin.setRole("ROLE_ADMIN");
-            userAdmin.setImageURL("https://cdn.discordapp.com/attachments/1371880792808099921/1372205572161671269/munequito.png?ex=6825ed86&is=68249c06&hm=4cc739945363720af26b485be617cf6549f0d6760f0b7a946574ee7732335d0d&");
+            userAdmin.setImageURL("https://cdn.pixabay.com/photo/2025/05/04/18/04/bird-9578746_1280.jpg");
             admin = Optional.of(us.createUser(userAdmin));
             System.out.println("ADMIN: " + us.toDTO(admin.get()));
         }
-        
+
         if (admin.isPresent()) {
             Optional<Collection> optGymStuff = cs.getCollectionByName("Gym Stuff");
             if (!optGymStuff.isPresent()) {
                 Collection gymStuff = new Collection("Gym Stuff", "Equipment and supplements for hypertrophy or exercise.", admin.get());
                 gymStuff = cs.createCollection(gymStuff);
                 System.out.println("GYM: " + gymStuff);
-
+                ucs.addUserToCollection(1, 1);
                 Optional<Product> optDumbbell = ps.getProductById("1234A");
                 if (!optDumbbell.isPresent()) {
                     Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", "Amazon", "https://www.ukgymequipment.com/images/2-20kg-premium-rubber-dumbbell-set-p5807-75449_image.jpg");
@@ -84,6 +88,19 @@ public class StartupRunner implements CommandLineRunner {
                         pcs.addProductToCollection(creatine.getId(), gymStuff.getName(), 2);
                     } catch (Exception e) {
                         System.out.println("Error: could not add product " + creatine.getName() + " to collection" + gymStuff.getName() + "");
+                    }
+                }
+
+                Optional<Product> optPepera = ps.getProductById("pepera7492");
+                if (!optPepera.isPresent()) {
+                    Product pepera = new Product("pepera7492", "Izan VS calvicie", "Izan pierde 100%", "Amazon", "https://media.tenor.com/9K0bOcaUG3gAAAAM/smiling-friends-pim.gif");
+                    pepera.setUploader(admin.get());
+                    pepera = ps.createProduct(pepera);
+                    System.out.println("PEPERA: " + pepera);
+                    try {
+                        pcs.addProductToCollection(pepera.getId(), gymStuff.getName(), 50);
+                    } catch (Exception e) {
+                        System.out.println("Error: could not add product " + pepera.getName() + " to collection" + gymStuff.getName() + "");
                     }
                 }
 

@@ -41,11 +41,11 @@ public class ProductCollectionService {
     public List<ProductCollection> getRelationsByCollectionName(String collectionName) {
         return productCollectionRepository.findRelationsByCollectionName(collectionName);
     }
-    
+
     public Optional<ProductCollection> getRelation(String collectionName, String productId) {
         return productCollectionRepository.findRelation(collectionName, productId);
     }
-    
+
     public Boolean isProductInCollection(String productId, String collectionName) {
         return productCollectionRepository.findRelation(collectionName, productId).isPresent();
     }
@@ -60,27 +60,28 @@ public class ProductCollectionService {
         ProductCollection productCollection = new ProductCollection(product, collection, quantity);
         return productCollectionRepository.save(productCollection);
     }
-    
+
     @Transactional
     public ProductCollection updateRelation(ProductCollection relation) {
         return productCollectionRepository.save(relation);
     }
-    
+
     @Transactional
     public void deleteRelation(ProductCollection relation) {
         productCollectionRepository.delete(relation);
     }
-    
+
     // 🔹 Convertir Product a ProductDTO
     public ProductCollectionDTO toDTO(ProductCollection productCollection) {
         return new ProductCollectionDTO(
-            productCollection.getProduct().getId(),
-            productCollection.getProduct().getName(),
-            productCollection.getProduct().getDescription(),
-            productCollection.getProduct().getUploader().getUsername(), // Extrae solo el nombre del uploader
-            productCollection.getProduct().getWhereToBuy(),
-            productCollection.getProduct().getUploadDate(),
-            productCollection.getQuantity()
+                productCollection.getProduct().getId(),
+                productCollection.getProduct().getName(),
+                productCollection.getProduct().getDescription(),
+                productCollection.getProduct().getUploader().getUsername(), // Extrae solo el nombre del uploader
+                productCollection.getProduct().getWhereToBuy(),
+                productCollection.getProduct().getUploadDate(),
+                productCollection.getProduct().getImageURL(),
+                productCollection.getQuantity()
         );
     }
 
