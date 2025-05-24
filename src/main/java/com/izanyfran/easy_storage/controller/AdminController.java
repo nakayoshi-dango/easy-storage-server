@@ -75,7 +75,7 @@ public class AdminController {
     }
     
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/admin/getAllCollections")
+    @GetMapping("/getAllCollections")
     public ResponseEntity<?> collectionsAll() {
         List<Collection> allCollections = collectionService.getAllCollections();
         if (allCollections.isEmpty()) {

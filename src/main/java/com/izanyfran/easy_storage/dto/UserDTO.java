@@ -17,7 +17,18 @@ public class UserDTO {
         this.creationDate = creationDate;
         this.imageURL = imageURL;
     }
-    
+
+    @Override
+    public String toString() {
+        return "UserDTO{"
+                + "\n\tid=" + id
+                + "\n\tusername=" + username
+                + "\n\trole=" + role
+                + "\n\tcreationDate=" + creationDate
+                + "\n\timageURL=" + imageURL
+                + "\n}";
+    }
+
     public String getImageURL() {
         return imageURL;
     }

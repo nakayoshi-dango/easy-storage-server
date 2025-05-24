@@ -21,7 +21,7 @@ public interface UserCollectionRepository extends JpaRepository<UserCollection, 
     @Query("SELECT uc.user FROM UserCollection uc WHERE uc.collection.name = :collectionName")
     List<User> findUsersByCollectionName(@Param("collectionName") String collectionName);
 
-    @Query("SELECT u FROM User u WHERE u.id NOT IN (SELECT uc.user.id FROM UserCollection uc WHERE uc.collection.name = :collectionName)")
+    @Query("SELECT u FROM User u WHERE u.id NOT IN (SELECT uc.user.id FROM UserCollection uc WHERE uc.collection.name = :collectionName) AND u.id NOT IN (SELECT c.owner.id FROM Collection c WHERE c.name = :collectionName)")
     List<User> findUsersNotInCollection(@Param("collectionName") String collectionName);
 
     @Query("SELECT uc.collection FROM UserCollection uc WHERE uc.user.id = :userId")

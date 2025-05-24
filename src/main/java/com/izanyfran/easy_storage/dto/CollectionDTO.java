@@ -3,6 +3,7 @@ package com.izanyfran.easy_storage.dto;
 import java.util.Date;
 
 public class CollectionDTO {
+
     private Integer id;
     private String name;
     private String description;
@@ -15,6 +16,17 @@ public class CollectionDTO {
         this.description = description;
         this.ownerUsername = ownerUsername;
         this.creationDate = creationDate;
+    }
+
+    @Override
+    public String toString() {
+        return "CollectionDTO{"
+                + "\n\tid=" + id
+                + "\n\tname=" + name
+                + "\n\tdescription=" + description
+                + "\n\townerUsername=" + ownerUsername
+                + "\n\tcreationDate=" + creationDate
+                + "\n}";
     }
 
     public Integer getId() {

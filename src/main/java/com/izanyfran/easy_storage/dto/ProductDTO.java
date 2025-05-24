@@ -3,6 +3,7 @@ package com.izanyfran.easy_storage.dto;
 import java.util.Date;
 
 public class ProductDTO {
+
     private String id;
     private String name;
     private String description;
@@ -19,6 +20,19 @@ public class ProductDTO {
         this.whereToBuy = whereToBuy;
         this.uploadDate = uploadDate;
         this.imageURL = imageURL;
+    }
+
+    @Override
+    public String toString() {
+        return "ProductDTO{"
+                + "\n\tid=" + id
+                + "\n\tname=" + name
+                + "\n\tdescription=" + description
+                + "\n\tuploaderUsername=" + uploaderUsername
+                + "\n\twhereToBuy=" + whereToBuy
+                + "\n\tuploadDate=" + uploadDate
+                + "\n\timageURL=" + imageURL
+                + "\n}";
     }
 
     public String getId() {

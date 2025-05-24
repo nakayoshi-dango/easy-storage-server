@@ -26,10 +26,14 @@ public class UserService {
     @Transactional
     public Boolean registerUser(String username, String password) {
         Boolean success;
+        if (username.equalsIgnoreCase("admin")) {
+            return false;
+        }
         if (getUserByUsername(username).isEmpty()) {
             User user = new User();
             user.setUsername(username);
             user.setPassword(passwordEncoder.encode(password)); // Guardar el hash
+            user.setImageURL("https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png");
             repositoryUser.save(user);
             success = true;
         } else {
@@ -42,7 +46,7 @@ public class UserService {
         Optional<User> user = repositoryUser.findByUsername(username);
         return user.isPresent() && passwordEncoder.matches(password, user.get().getPassword());
     }
-    
+
     public UserDTO toDTO(User user) {
         return new UserDTO(user.getId(), user.getUsername(), user.getRole(), user.getCreatedAt(), user.getImageURL());
     }
