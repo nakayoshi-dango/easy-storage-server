@@ -39,7 +39,7 @@ public class User implements Serializable {
     private Date creationDate = new Date();
     
     @Column(name = "image_url", columnDefinition = "TEXT")
-    private String imageURL;
+    private String imageURL = "https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png";
     
     @OneToMany(mappedBy = "uploader", cascade = CascadeType.REMOVE)
     @JsonIgnore
@@ -92,44 +92,6 @@ public class User implements Serializable {
         this.username = username;
         this.password = password;
         this.role = role;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.username);
-        hash = 67 * hash + Objects.hashCode(this.password);
-        hash = 67 * hash + Objects.hashCode(this.role);
-        hash = 67 * hash + Objects.hashCode(this.creationDate);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final User other = (User) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.role, other.role)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        return Objects.equals(this.creationDate, other.creationDate);
     }
 
     @Override

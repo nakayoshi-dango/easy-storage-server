@@ -16,23 +16,26 @@ import java.util.Objects;
 @Entity
 @Table(name = "collections")
 public class Collection implements Serializable {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     @Column(unique = true, nullable = false)
     private String name;
-    
+
     @Column(columnDefinition = "TEXT")
     private String description;
-    
+
     @ManyToOne
     @JoinColumn(name = "owner_id", referencedColumnName = "id", nullable = false)
     private User owner;
-    
+
     @Column(name = "creation_date")
     private Date creationDate = new Date();
+
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageURL = "https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png";
 
     public Collection(Integer id, String name, String description) {
         this.id = id;
@@ -48,57 +51,26 @@ public class Collection implements Serializable {
         this.description = description;
         this.owner = owner;
     }
-    
-    public Collection(String name, String description) {
+
+    public Collection(String name, String description, String imageURL) {
         this.name = name;
         this.description = description;
+        this.imageURL = imageURL;
     }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 89 * hash + Objects.hashCode(this.id);
-        hash = 89 * hash + Objects.hashCode(this.name);
-        hash = 89 * hash + Objects.hashCode(this.description);
-        hash = 89 * hash + Objects.hashCode(this.owner);
-        hash = 89 * hash + Objects.hashCode(this.creationDate);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Collection other = (Collection) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.owner, other.owner)) {
-            return false;
-        }
-        return Objects.equals(this.creationDate, other.creationDate);
-    }
-    
-    
 
     @Override
     public String toString() {
         return "Collection{" + "id=" + id + ", name=" + name + ", description=" + description + ", owner=" + owner.getUsername() + ", creationDate=" + creationDate + '}';
     }
-    
+
+    public String getImageURL() {
+        return imageURL;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -138,6 +110,5 @@ public class Collection implements Serializable {
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
     }
-    
-    
+
 }

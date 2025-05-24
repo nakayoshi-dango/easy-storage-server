@@ -35,7 +35,7 @@ public class Product implements Serializable {
     private Date uploadDate = new Date();
     
     @Column(name = "image_url", columnDefinition = "TEXT")
-    private String imageURL;
+    private String imageURL = "https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png";
     
     
     public Product() {
@@ -55,48 +55,6 @@ public class Product implements Serializable {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 97 * hash + Objects.hashCode(this.id);
-        hash = 97 * hash + Objects.hashCode(this.name);
-        hash = 97 * hash + Objects.hashCode(this.description);
-        hash = 97 * hash + Objects.hashCode(this.uploader);
-        hash = 97 * hash + Objects.hashCode(this.whereToBuy);
-        hash = 97 * hash + Objects.hashCode(this.uploadDate);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Product other = (Product) obj;
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        if (!Objects.equals(this.description, other.description)) {
-            return false;
-        }
-        if (!Objects.equals(this.whereToBuy, other.whereToBuy)) {
-            return false;
-        }
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.uploader, other.uploader)) {
-            return false;
-        }
-        return Objects.equals(this.uploadDate, other.uploadDate);
     }
 
     @Override

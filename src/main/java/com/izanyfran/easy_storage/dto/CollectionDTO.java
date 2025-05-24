@@ -9,13 +9,15 @@ public class CollectionDTO {
     private String description;
     private String ownerUsername;
     private Date creationDate;
-
-    public CollectionDTO(Integer id, String name, String description, String ownerUsername, Date creationDate) {
+    private String imageURL;
+    
+    public CollectionDTO(Integer id, String name, String description, String ownerUsername, Date creationDate, String imageURL) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.ownerUsername = ownerUsername;
         this.creationDate = creationDate;
+        this.imageURL = imageURL;
     }
 
     @Override
@@ -27,6 +29,10 @@ public class CollectionDTO {
                 + "\n\townerUsername=" + ownerUsername
                 + "\n\tcreationDate=" + creationDate
                 + "\n}";
+    }
+    
+    public String getImageURL() {
+        return imageURL;
     }
 
     public Integer getId() {

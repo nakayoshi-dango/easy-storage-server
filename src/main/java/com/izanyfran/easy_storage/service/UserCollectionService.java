@@ -30,7 +30,7 @@ public class UserCollectionService {
     public List<User> getUsersByCollectionName(String collectionName) {
         return userCollectionRepository.findUsersByCollectionName(collectionName);
     }
-    
+
     public List<User> getUsersNotInCollection(String collectionName) {
         return userCollectionRepository.findUsersNotInCollection(collectionName);
     }

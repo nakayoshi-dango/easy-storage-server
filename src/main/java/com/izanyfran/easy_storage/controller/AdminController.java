@@ -8,6 +8,7 @@ import com.izanyfran.easy_storage.entity.Collection;
 import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.CollectionService;
 import com.izanyfran.easy_storage.service.UserService;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,7 @@ public class AdminController {
         if (allCollections.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aún no existen colecciones.");
         } else {
+            allCollections.sort(Comparator.comparing(Collection::getName));
             return ResponseEntity.ok(collectionService.toDTOList(allCollections));
         }
     }

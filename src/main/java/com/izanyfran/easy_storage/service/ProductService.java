@@ -38,17 +38,16 @@ public class ProductService {
             return List.of();
         }
     }
-    
-    // 🔹 Convertir Product a ProductDTO
+
     public ProductDTO toDTO(Product product) {
         return new ProductDTO(
-            product.getId(),
-            product.getName(),
-            product.getDescription(),
-            product.getUploader().getUsername(), // Extrae solo el nombre del uploader
-            product.getWhereToBuy(),
-            product.getUploadDate(),
-            product.getImageURL()
+                product.getId(),
+                product.getName(),
+                product.getDescription(),
+                product.getUploader().getUsername(), // Extrae solo el nombre del uploader
+                product.getWhereToBuy(),
+                product.getUploadDate(),
+                product.getImageURL()
         );
     }
 

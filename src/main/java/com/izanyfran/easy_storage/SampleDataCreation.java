@@ -70,6 +70,7 @@ public class SampleDataCreation implements CommandLineRunner {
             }
 
             Collection gymStuff = new Collection("Gym Stuff", "Equipment and supplements for hypertrophy or exercise.", admin.get());
+            gymStuff.setImageURL("https://cdn.pixabay.com/photo/2018/04/16/15/40/dumbbell-3324976_1280.jpg");
             gymStuff = cs.createCollection(gymStuff);
             System.out.println("GYM: " + gymStuff);
 
@@ -94,6 +95,7 @@ public class SampleDataCreation implements CommandLineRunner {
             ucs.addUserToCollection(izan.getId(), gymStuff.getId());
 
             Collection fruitShop = new Collection("Fruit Shop", "Fresh fruit on sale.", izan);
+            fruitShop.setImageURL("https://cdn.pixabay.com/photo/2018/04/12/09/29/market-3312908_1280.jpg");
             fruitShop = cs.createCollection(fruitShop);
             System.out.println("FRUITSHOP: " + fruitShop);
 

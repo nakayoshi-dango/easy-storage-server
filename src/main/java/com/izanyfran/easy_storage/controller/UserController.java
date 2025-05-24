@@ -5,6 +5,7 @@ import com.izanyfran.easy_storage.entity.User;
 import com.izanyfran.easy_storage.service.CollectionService;
 import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,7 @@ public class UserController {
         if (allusers.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aún no existen usuarios.");
         } else {
+            allusers.sort(Comparator.comparing(User::getUsername));
             return ResponseEntity.ok(userService.toDTOList(allusers));
         }
     }

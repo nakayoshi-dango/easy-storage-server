@@ -8,6 +8,7 @@ import com.izanyfran.easy_storage.service.ProductCollectionService;
 import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -54,6 +55,7 @@ public class CollectionController {
         if (userCollections.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen colecciones creadas por el usuario.");
         } else {
+            userCollections.sort(Comparator.comparing(Collection::getName));
             return ResponseEntity.ok(collectionService.toDTOList(userCollections));
         }
     }
@@ -71,6 +73,7 @@ public class CollectionController {
         if (visibleCollectionsList.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen colecciones visibles para el usuario.");
         } else {
+            visibleCollectionsList.sort(Comparator.comparing(Collection::getName));
             return ResponseEntity.ok(collectionService.toDTOList(visibleCollectionsList));
         }
     }
@@ -88,6 +91,10 @@ public class CollectionController {
                 if (productsCollection.isEmpty()) {
                     return ResponseEntity.ok("No existen productos en esta colección.");
                 } else {
+                    productsCollection.sort((p1, p2) -> {
+                        // lógica personalizada
+                        return p1.getProduct().getName().compareToIgnoreCase(p2.getProduct().getName());
+                    });
                     return ResponseEntity.ok(productCollectionService.toDTOList(productsCollection));
                 }
             } else {
@@ -111,6 +118,7 @@ public class CollectionController {
                 if (members.isEmpty()) {
                     return ResponseEntity.ok("No existen miembros en esta colección.");
                 } else {
+                    members.sort(Comparator.comparing(User::getUsername));
                     return ResponseEntity.ok(userService.toDTOList(members));
                 }
             } else {
@@ -131,6 +139,7 @@ public class CollectionController {
         if (col.isPresent()) {
             if (hasAccess(col.get(), user)) {
                 List<User> nonmembers = userCollectionService.getUsersNotInCollection(collectionName);
+                nonmembers.sort(Comparator.comparing(User::getUsername));
                 return ResponseEntity.ok(userService.toDTOList(nonmembers));
             } else {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("No tienes acceso a esta colección.");

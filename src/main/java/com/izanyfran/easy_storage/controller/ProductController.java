@@ -9,6 +9,7 @@ import com.izanyfran.easy_storage.service.ProductCollectionService;
 import com.izanyfran.easy_storage.service.ProductService;
 import com.izanyfran.easy_storage.service.UserCollectionService;
 import com.izanyfran.easy_storage.service.UserService;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class ProductController {
         if (allProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Aún no existen productos.");
         } else {
+            allProducts.sort(Comparator.comparing(Product::getName));
             return ResponseEntity.ok(productService.toDTOList(allProducts));
         }
     }
@@ -67,6 +69,7 @@ public class ProductController {
         if (userProducts.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen productos subidos por el usuario.");
         } else {
+            userProducts.sort(Comparator.comparing(Product::getName));
             return ResponseEntity.ok(productService.toDTOList(userProducts));
         }
     }
