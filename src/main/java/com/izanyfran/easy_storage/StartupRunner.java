@@ -31,7 +31,7 @@ public class StartupRunner implements CommandLineRunner {
         System.out.println("\n\n\n\n\n\n STARTUP RUNNER");
         String passHash = passwordEncoder.encode(adminPassword);
 
-        Optional<User> admin = us.getUserByUsername("admin");
+        Optional<User> admin = us.getUserByUsername(adminUsername);
         if (!admin.isPresent()) {
             User userAdmin = new User(adminUsername, passHash);
             userAdmin.setRole("ROLE_ADMIN");

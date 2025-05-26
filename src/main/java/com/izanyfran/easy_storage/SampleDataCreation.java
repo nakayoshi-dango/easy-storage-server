@@ -59,7 +59,7 @@ public class SampleDataCreation implements CommandLineRunner {
         if ("create".equalsIgnoreCase(ddlAuto) || "create-drop".equalsIgnoreCase(ddlAuto)) {
             System.out.println("\n\n\n\n\n\n SAMPLE DATA CREATION ");
 
-            Optional<User> admin = us.getUserByUsername("admin");
+            Optional<User> admin = us.getUserByUsername(adminUsername);
             if (!admin.isPresent()) {
                 String passHash = passwordEncoder.encode(adminPassword);
                 User userAdmin = new User(adminUsername, passHash);
