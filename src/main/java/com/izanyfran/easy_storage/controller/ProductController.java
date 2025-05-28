@@ -103,7 +103,7 @@ public class ProductController {
                     String productName = product.get().getName();
                     if (productCollectionService.isProductInCollection(productId, collectionName)) {
                         ProductCollection pc = productCollectionService.getRelation(collectionName, productId).get();
-                        if ((pc.getQuantity() - quantity) < 0) {
+                        if ((pc.getQuantity() + quantity) < 0) {
                             pc.setQuantity(0);
                         } else {
                             pc.setQuantity(pc.getQuantity() + quantity);
