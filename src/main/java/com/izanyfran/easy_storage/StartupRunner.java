@@ -1,40 +1,46 @@
 package com.izanyfran.easy_storage;
 
-import com.izanyfran.easy_storage.entity.Product;
 import com.izanyfran.easy_storage.entity.User;
-import com.izanyfran.easy_storage.service.ServiceProduct;
-import com.izanyfran.easy_storage.service.ServiceUser;
-import java.sql.Date;
-import java.time.LocalDate;
+import com.izanyfran.easy_storage.service.UserService;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 @Component
 @EntityScan(basePackages = "com.izanyfran.easy_storage.entity")
 public class StartupRunner implements CommandLineRunner {
 
+    @Value("${app.admin.username}")
+    private String adminUsername;
+
+    @Value("${app.admin.password}")
+    private String adminPassword;
+
     @Autowired
-    private ServiceUser su;
-    @Autowired
-    private ServiceProduct sp;
+    private UserService us;
+
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
     public void run(String... args) throws Exception {
-        String pass = "admin";
-        System.out.println("admin's password before hash: " + pass);
-        System.out.println("admin's password after hash: " + pass.hashCode());
-        Date today = Date.valueOf(LocalDate.now());
-        User admin = su.getUserByUsername("admin");
-        if (admin == null) {
-            admin = new User("admin", pass.hashCode(), "admin", 444444444, today);
-            admin = su.createUser(admin);
+
+        System.out.println("\n\n\n\n\n\n STARTUP RUNNER");
+        String passHash = passwordEncoder.encode(adminPassword);
+
+        Optional<User> admin = us.getUserByUsername(adminUsername);
+        if (!admin.isPresent()) {
+            User userAdmin = new User(adminUsername, passHash);
+            userAdmin.setRole("ROLE_ADMIN");
+            userAdmin.setImageURL("https://cdn.pixabay.com/photo/2025/05/04/18/04/bird-9578746_1280.jpg");
+            admin = Optional.of(us.createUser(userAdmin));
+            System.out.println("ADMIN: " + us.toDTO(admin.get()));
         }
-        System.out.println("Sample User.toString():" + admin);
-        Product dumbbell = new Product("1234A", "20kg dumbbells", "A pair of dumbbells weighing 20kg each.", admin, "Amazon", today);
-        dumbbell = sp.createProduct(dumbbell);
-        System.out.println("Sample Product.toString():" + dumbbell);
+
+        System.out.println("\n\n\n\n\n\n STARTUP RUNNER");
     }
 
 }

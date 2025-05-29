@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### installer ###
+installer/easy-storage.jar
+installer.zip
