@@ -70,7 +70,11 @@ public class ProductService {
 
     @Transactional
     public void deleteProduct(String id) {
-        repositoryProduct.deleteById(id);
+        Optional<Product> product = repositoryProduct.findById(id);
+        if (product.isPresent()) {
+            product.get().getProductCollections().size();
+            repositoryProduct.deleteById(id);
+        }
     }
 
     @Transactional

@@ -76,7 +76,11 @@ public class CollectionService {
     @Transactional
     public void deleteCollectionByName(String name) {
         Optional<Collection> collection = repositoryCollection.findByName(name);
-        collection.ifPresent(repositoryCollection::delete);
+        if (collection.isPresent()) {
+            collection.get().getProductCollections().size();
+            collection.get().getUserCollections().size();
+            collection.ifPresent(repositoryCollection::delete);
+        }
     }
 
 }
