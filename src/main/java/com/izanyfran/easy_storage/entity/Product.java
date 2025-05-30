@@ -1,13 +1,17 @@
 package com.izanyfran.easy_storage.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -36,6 +40,10 @@ public class Product implements Serializable {
     
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageURL = "https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png";
+    
+    
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductCollection> productCollections = new ArrayList<>();
     
     
     public Product() {
@@ -108,5 +116,13 @@ public class Product implements Serializable {
 
     public void setUploadDate(Date uploadDate) {
         this.uploadDate = uploadDate;
+    }
+
+    public List<ProductCollection> getProductCollections() {
+        return productCollections;
+    }
+
+    public void setProductCollections(List<ProductCollection> productCollections) {
+        this.productCollections = productCollections;
     }
 }

@@ -8,9 +8,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -36,7 +39,13 @@ public class Collection implements Serializable {
 
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageURL = "https://cdn.pixabay.com/photo/2023/11/24/10/16/duck-8409656_1280.png";
+    
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductCollection> productCollections = new ArrayList<>();
 
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserCollection> userCollections = new ArrayList<>();
+    
     public Collection(Integer id, String name, String description) {
         this.id = id;
         this.name = name;
@@ -109,6 +118,22 @@ public class Collection implements Serializable {
 
     public void setCreationDate(Date creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public List<ProductCollection> getProductCollections() {
+        return productCollections;
+    }
+
+    public void setProductCollections(List<ProductCollection> productCollections) {
+        this.productCollections = productCollections;
+    }
+
+    public List<UserCollection> getUserCollections() {
+        return userCollections;
+    }
+
+    public void setUserCollections(List<UserCollection> userCollections) {
+        this.userCollections = userCollections;
     }
 
 }
