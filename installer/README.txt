@@ -26,4 +26,6 @@ Para configurar el servidor en Windows:
 Una vez configurado, ejecutar start.bat o start.sh
 
 # Ejecución
-Siempre comprobar que el servicio mysql está iniciado y después ejecutar start.bat o start.sh
+Siempre comprobar que el servicio mysql está iniciado y después ejecutar start.bat o start.sh.
+Si se desea usar los datos de prueba, hay que establecer el ddl-auto en create: 
+spring.jpa.hibernate.ddl-auto=create
